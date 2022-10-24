@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        listItems = loadTasks()
+        loadTasks()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -116,35 +116,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTasks(): MutableList<String> {
-        try {
-            val file = File(filesDir, "tasks.dat")  //Loading from files directory
-            val fis = FileInputStream(file)
-            val ois = ObjectInputStream(fis)
+    private fun loadTasks() {
+        Thread{
+            try {
+                val file = File(filesDir, "tasks.dat")  //Loading from files directory
+                val fis = FileInputStream(file)
+                val ois = ObjectInputStream(fis)
 
-            return ois.readObject() as MutableList<String> //ignore
+                listItems = ois.readObject() as MutableList<String> //ignore
 
-        } catch (e: IOException) {
-            println(e.stackTrace)
-        }
-        return mutableListOf<String>()
+            } catch (e: IOException) {
+                println(e.stackTrace)
+                listItems = mutableListOf()
+            }
+
+        }.start()
+
     }
 
     private fun saveTasks() {
-        try {
-            Log.d("saving", "Saving")
-            val file = File(filesDir, "tasks.dat") //Saving to files directory
-            val fos = FileOutputStream(file)
-            val oos = ObjectOutputStream(fos)
-            oos.writeObject(listItems)
-            oos.close()
-            fos.close()
-            Log.d("save", "Saved")
+
+        Thread{
+            try {
+                Log.d("saving", "Saving")
+                val file = File(filesDir, "tasks.dat") //Saving to files directory
+                val fos = FileOutputStream(file)
+                val oos = ObjectOutputStream(fos)
+                oos.writeObject(listItems)
+                oos.close()
+                fos.close()
+                Log.d("save", "Saved")
 
 
-        } catch (e: IOException) {
-            Log.e("Stack trace: ", e.message.toString())
-        }
+            } catch (e: IOException) {
+                Log.e("Stack trace: ", e.message.toString())
+            }
+        }.start()
+
 
     }
 
