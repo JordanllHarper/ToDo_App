@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         setSupportActionBar(binding.toolbar)
-        adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems)
+        adapter = ArrayAdapter<String>(this, R.layout.list_layout, listItems)
         binding.listView.adapter = adapter
 
         registerForContextMenu(binding.listView)
